@@ -1,4 +1,5 @@
 # Stolen Bike Cases - JOIN Coding Challenge - Backend (Node.js)
+![JOIN Stolen Bike Cases](https://github.com/join-com/coding-challenge-backend-nodejs/raw/master/illustration.png)
 
 ## The context
 Stolen bikes are a typical problem in Berlin. The Police want to be more efficient in resolving stolen bike cases. They decided to build a software that can automate their processes — the software that you're going to develop. 
