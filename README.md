@@ -35,4 +35,4 @@ Please stick to the Product Requirements. You should not implement authorisation
 - Commit early and often. We want to be able to check your progress
 - Make your API public. Deploy it using the service of your choice (e.g. AWS, Heroku, Digital Ocean...)
 - Create a pull request
-- Please return your working solution within 7 days of receiving this challenge
+- Please complete your working solution within 7 days of receiving this challenge, and be sure to notify us when it is ready for review.
