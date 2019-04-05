@@ -6,12 +6,10 @@ Stolen bikes are a typical problem in Berlin. The Police want to be more efficie
 
 ## Product Requirements
 - [ ] Bike owners can report a stolen bike.
-- [ ] A bike can have multiple characteristics: license number, color, type, full name of the owner, date, and description of the theft.
-- [ ] Police have multiple departments that are responsible for stolen bikes. 
-- [ ] A department can have some amount of police officers who can work on stolen bike cases.
-- [ ] The Police can scale their number of departments, and can increase the number of police officers per department.
-- [ ] Each police officer should be able to search bikes by different characteristics in a database and see which department is responsible for a stolen bike case.
-- [ ] New stolen bike cases should be automatically assigned to any free police officer in any department.  
+- [ ] A bike can have multiple characteristics: e.glicense number, color, type, full name of the owner, date, and description of the theft.
+- [ ] The Police can increase or decrease the number of police officers.
+- [ ] Each police officer should be able to search bikes by different characteristics in a database and see which police officer is responsible for a stolen bike case.
+- [ ] New stolen bike cases should be automatically assigned to any free police officer.  
 - [ ] A police officer can only handle one stolen bike case at a time. 
 - [ ] When the Police find a bike, the case is marked as resolved and the responsible police officer becomes available to take a new stolen bike case. 
 - [ ] The system should be able to assign unassigned stolen bike cases automatically when a police officer becomes available.
