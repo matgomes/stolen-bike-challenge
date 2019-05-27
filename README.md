@@ -14,7 +14,9 @@ Stolen bikes are a typical problem in Berlin. The Police want to be more efficie
 ## Your Mission
 Your task is to provide APIs for a frontend application that satisfies all requirements above.
 
-Please stick to the Product Requirements. You should not implement authorisation and authentication, as they are not important for the assessment. Assume everyone can make requests to any api. 
+Do not spend more than 4 hours,
+
+Please stick to the Product Requirements. You should not implement authorisation and authentication, as they are not important for the assessment. Assume everyone can make requests to any API. 
 
 ## Tech Requirements
 - Node.js
