@@ -18,15 +18,15 @@ Please stick to the Product Requirements. You should not implement authorisation
 
 ## Tech Requirements
 - Node.js
+- **Tests (quality and coverage)**
 - You are free to use any framework, but it’s recommended that you use one that you’re good at
 - Use only SQL Database
-- Tests (quality and coverage)
 - Typescript is a plus
 
 ## Instructions
-- Fork this repo
 - The challenge is on!
-- Build a performant, clean and well-structured solution
-- Commit early and often. We want to be able to check your progress
-- Create a pull request
-- Please complete your working solution within 7 days of receiving this challenge, and be sure to notify us when it is ready for review.
+- Build a performant, **clean and well-structured solution**.
+- Commit early and often. We want to be able to check your progress.
+- **Send us an email with a link to repository when you finish the assesment**.
+- Please do not spend more than 4 hours.
+- Please complete your working solution within 7 days of receiving this challenge.
