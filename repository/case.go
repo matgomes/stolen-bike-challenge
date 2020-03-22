@@ -15,7 +15,7 @@ func (r *Repository) GetAllCases() ([]models.Case, error) {
 	return result, err
 }
 
-func (r *Repository) GetCaseByID(id string) (models.Case, error) {
+func (r *Repository) GetCaseById(id string) (models.Case, error) {
 
 	var result models.Case
 

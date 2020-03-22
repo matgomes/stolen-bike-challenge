@@ -3,7 +3,6 @@ package services
 import (
 	"github.com/matgomes/stolen-bike-challenge/models"
 	"github.com/matgomes/stolen-bike-challenge/repository"
-	"log"
 	"time"
 )
 
@@ -12,12 +11,10 @@ type CaseService struct {
 }
 
 func (service *CaseService) FindAllCases() ([]models.Case, error) {
-	log.Println("Finding all cases")
 	return service.Repo.GetAllCases()
 }
 
 func (service *CaseService) FindCase(id string) (models.Case, error) {
-	log.Printf("Finding case by id ")
 	return service.Repo.GetCaseById(id)
 }
 

@@ -11,9 +11,9 @@ type Officer struct {
 }
 
 type Bike struct {
-	OwnerName string `json:"owner_name" bson:"owner_name"`
-	Color     string `json:"color" bson:"color"`
-	Model     string `json:"model" bson:"model"`
+	Owner string `json:"owner" bson:"owner"`
+	Color string `json:"color" bson:"color"`
+	Model string `json:"model" bson:"model"`
 }
 
 type Case struct {

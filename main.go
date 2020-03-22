@@ -8,20 +8,20 @@ import (
 	"net/http"
 )
 
-var Repo repository.Repository
+var repo repository.Repository
 
 func init() {
-	Repo = repository.Repository{
+	repo = repository.Repository{
 		Server:   "localhost",
 		Database: "police",
 	}
 
-	Repo.Connect()
+	repo.Connect()
 }
 
 func main() {
 
-	handlers := controller.New(&Repo)
+	handlers := controller.New(&repo)
 
 	router := chi.NewRouter()
 	router.Get("/case", handlers.GetAll)
@@ -29,11 +29,13 @@ func main() {
 	router.Post("/case", handlers.Create)
 	router.Put("/case/{id}/close", handlers.Close)
 
+	log.Println("[ Listening on 0.0.0.0:8080 ]")
+
 	err := http.ListenAndServe(":8080", router)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	defer Repo.Close()
+	defer repo.Close()
 }
