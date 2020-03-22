@@ -52,7 +52,6 @@ func (service *CaseService) CloseCase(id string) error {
 	}
 
 	return service.Repo.InsertOfficer(foundCase.Officer)
-
 }
 
 func (service *CaseService) findAvailableOfficer() (models.Officer, error) {
