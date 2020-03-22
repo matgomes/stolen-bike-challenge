@@ -10,3 +10,4 @@ WIP
 - [ ] Add Dockerfile and docker-compose 
 - [ ] Add tests
 - [ ] Add logs
+- [ ] Externalize configs to environment variables
