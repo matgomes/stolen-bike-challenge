@@ -27,7 +27,7 @@ func main() {
 	router.Get("/case", handlers.GetAll)
 	router.Get("/case/{id}", handlers.GetOne)
 	router.Post("/case", handlers.Create)
-	router.Put("/case/{id}/close", handlers.Close)
+	router.Put("/case/{id}/resolve", handlers.Resolve)
 
 	log.Println("[ Listening on 0.0.0.0:8080 ]")
 

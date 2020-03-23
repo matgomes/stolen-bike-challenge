@@ -68,10 +68,10 @@ func (c *Controller) Create(writer http.ResponseWriter, request *http.Request) {
 	respondWithJson(writer, http.StatusAccepted, nil)
 }
 
-func (c *Controller) Close(writer http.ResponseWriter, request *http.Request) {
+func (c *Controller) Resolve(writer http.ResponseWriter, request *http.Request) {
 
 	id := chi.URLParam(request, "id")
-	err := c.Service.CloseCase(id)
+	err := c.Service.ResolveCase(id)
 
 	if err != nil {
 		respondWithJson(writer, http.StatusBadRequest, nil)

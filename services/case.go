@@ -40,12 +40,16 @@ func (service *CaseService) OpenCase(bike models.Bike) error {
 	return service.Repo.RemoveOfficer(officer)
 }
 
-func (service *CaseService) CloseCase(id string) error {
+func (service *CaseService) ResolveCase(id string) error {
 
-	foundCase, _ := service.Repo.GetCaseById(id)
+	foundCase, err := service.Repo.GetCaseById(id)
+	if err != nil {
+		return err
+	}
+
 	foundCase.Open = false
 
-	err := service.Repo.UpdateCase(foundCase)
+	err = service.Repo.UpdateCase(foundCase)
 
 	if err != nil {
 		return err
