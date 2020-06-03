@@ -2,14 +2,14 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/julienschmidt/httprouter"
+	"github.com/go-chi/chi"
 	"github.com/matgomes/stolen-bike-challenge/api/model"
 	"github.com/matgomes/stolen-bike-challenge/api/repository"
 	"net/http"
 	"strconv"
 )
 
-func GetAllCases(_ *http.Request, repo *repository.Repository, _ httprouter.Params) (int, interface{}) {
+func GetAllCases(_ *http.Request, repo *repository.Repository) (int, interface{}) {
 
 	cases, err := repo.GetAllCases()
 
@@ -20,9 +20,10 @@ func GetAllCases(_ *http.Request, repo *repository.Repository, _ httprouter.Para
 	return http.StatusOK, cases
 }
 
-func GetOneCase(_ *http.Request, repo *repository.Repository, ps httprouter.Params) (int, interface{}) {
+func GetOneCase(request *http.Request, repo *repository.Repository) (int, interface{}) {
 
-	id, _ := strconv.Atoi(ps.ByName("id"))
+	// TODO - check for error
+	id, _ := strconv.Atoi(chi.URLParam(request, "id"))
 
 	result, err := repo.GetCaseByID(id)
 
@@ -33,7 +34,7 @@ func GetOneCase(_ *http.Request, repo *repository.Repository, ps httprouter.Para
 	return http.StatusOK, result
 }
 
-func CreateCase(request *http.Request, repo *repository.Repository, _ httprouter.Params) (int, interface{}) {
+func CreateCase(request *http.Request, repo *repository.Repository) (int, interface{}) {
 
 	var body model.Case
 	decoder := json.NewDecoder(request.Body)
@@ -57,9 +58,9 @@ func CreateCase(request *http.Request, repo *repository.Repository, _ httprouter
 	return http.StatusOK, body
 }
 
-func ResolveCase(_ *http.Request, repo *repository.Repository, ps httprouter.Params) (int, interface{}) {
+func ResolveCase(request *http.Request, repo *repository.Repository) (int, interface{}) {
 
-	id := ps.ByName("id")
+	id := chi.URLParam(request, "id")
 
 	idInt, err := strconv.Atoi(id)
 
