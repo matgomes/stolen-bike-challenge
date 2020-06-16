@@ -16,6 +16,12 @@ type Api struct {
 	repo *repository.Repository
 }
 
+type Route struct {
+	Path    string
+	Handler RequestHandler
+	Method  string
+}
+
 func NewApi(conf config.Config) Api {
 
 	db, err := repository.Connect(conf.DB)
@@ -34,10 +40,14 @@ func NewApi(conf config.Config) Api {
 
 func (a *Api) SetRoutes() {
 
-	a.mux.Get("/case", a.handleRequest(handler.GetAllCases))
-	a.mux.Get("/case/{id}", a.handleRequest(handler.GetOneCase))
-	a.mux.Post("/case", a.handleRequest(handler.CreateCase))
-	a.mux.Post("/case/{id}/resolve", a.handleRequest(handler.ResolveCase))
+	routes := []Route{
+		{"/case", handler.GetAllCases, http.MethodGet},
+		{"/case/{id}", handler.GetOneCase, http.MethodGet},
+		{"/case", handler.CreateCase, http.MethodPost},
+		{"/case/{id}/resolve", handler.ResolveCase, http.MethodPost},
+	}
+
+	configRoutes(a.mux, a.handleRequest, routes)
 }
 
 func (a *Api) Start() {
@@ -52,15 +62,24 @@ func (a *Api) Start() {
 	defer a.repo.CloseConn()
 }
 
-type RequestHandler func(r *http.Request, repo *repository.Repository) (code int, payload interface{})
+type Middleware func(RequestHandler) http.HandlerFunc
+type RequestHandler func(*http.Request, *repository.Repository) (code int, payload interface{})
+
+func configRoutes(mux *chi.Mux, middleware Middleware, routes []Route) {
+
+	for _, r := range routes {
+		mux.MethodFunc(r.Method, r.Path, middleware(r.Handler))
+	}
+
+}
 
 func (a *Api) handleRequest(handler RequestHandler) http.HandlerFunc {
 
 	return func(writer http.ResponseWriter, req *http.Request) {
 
-		writer.Header().Set("Content-Type", "application/json")
-
 		code, payload := handler(req, a.repo)
+
+		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(code)
 
 		if payload == nil {

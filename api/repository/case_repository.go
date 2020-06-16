@@ -71,7 +71,7 @@ func (r *Repository) InsertCase(c model.Case) (id int, err error) {
 			  VALUES ($1, $2, $3, $4, $5, $6) 
 			  RETURNING id`
 
-	err = r.db.QueryRow(query, c.Owner, c.Color, c.Brand, c.Resolved, c.Moment, handleNullableID(c.Officer.Id)).Scan(&id)
+	err = r.db.QueryRow(query, c.Owner, c.Color, c.Brand, c.Resolved, c.Moment, getNullableID(c.Officer.Id)).Scan(&id)
 
 	return id, err
 }

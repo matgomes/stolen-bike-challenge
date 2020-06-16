@@ -29,13 +29,9 @@ type scanner interface {
 	Scan(...interface{}) error
 }
 
-func handleNullableID(id int) (new sql.NullInt64) {
-
-	new.Int64 = int64(id)
-
-	if id > 0 {
-		new.Valid = true
+func getNullableID(id int) sql.NullInt64 {
+	return sql.NullInt64{
+		Int64: int64(id),
+		Valid: id > 0,
 	}
-
-	return new
 }
