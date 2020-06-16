@@ -1,65 +1,65 @@
 package api
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-chi/chi"
-	"github.com/matgomes/stolen-bike-challenge/api/handler"
-	"github.com/matgomes/stolen-bike-challenge/api/repository"
-	"github.com/matgomes/stolen-bike-challenge/config"
-	"log"
-	"net/http"
+    "encoding/json"
+    "fmt"
+    "github.com/go-chi/chi"
+    "github.com/matgomes/stolen-bike-challenge/api/handler"
+    "github.com/matgomes/stolen-bike-challenge/api/repository"
+    "github.com/matgomes/stolen-bike-challenge/config"
+    "log"
+    "net/http"
 )
 
 type Api struct {
-	mux  *chi.Mux
-	repo *repository.Repository
+    mux  *chi.Mux
+    repo *repository.Repository
 }
 
 type Route struct {
-	Path    string
-	Handler RequestHandler
-	Method  string
+    Path    string
+    Handler RequestHandler
+    Method  string
 }
 
 func NewApi(conf config.Config) Api {
 
-	db, err := repository.Connect(conf.DB)
+    db, err := repository.Connect(conf.DB)
 
-	if err != nil {
-		fmt.Println(err)
-		panic("failed to connect database")
-	}
+    if err != nil {
+        fmt.Println(err)
+        panic("failed to connect database")
+    }
 
-	return Api{
-		mux:  chi.NewRouter(),
-		repo: repository.NewRepository(db),
-	}
+    return Api{
+        mux:  chi.NewRouter(),
+        repo: repository.NewRepository(db),
+    }
 
 }
 
 func (a *Api) SetRoutes() {
 
-	routes := []Route{
-		{"/case", handler.GetAllCases, http.MethodGet},
-		{"/case/{id}", handler.GetOneCase, http.MethodGet},
-		{"/case", handler.CreateCase, http.MethodPost},
-		{"/case/{id}/resolve", handler.ResolveCase, http.MethodPost},
-	}
+    routes := []Route{
+        {"/case", handler.GetAllCases, http.MethodGet},
+        {"/case/{id}", handler.GetOneCase, http.MethodGet},
+        {"/case", handler.CreateCase, http.MethodPost},
+        {"/case/{id}/resolve", handler.ResolveCase, http.MethodPost},
+    }
 
-	configRoutes(a.mux, a.handleRequest, routes)
+    configRoutes(a.mux, a.handleRequest, routes)
 }
 
 func (a *Api) Start() {
-	log.Println("[ Listening on 0.0.0.0:8080 ]")
+    log.Println("[ Listening on 0.0.0.0:8080 ]")
 
-	err := http.ListenAndServe(":8080", a.mux)
+    err := http.ListenAndServe(":8080", a.mux)
 
-	if err != nil {
-		log.Fatal(err)
-	}
+    if err != nil {
+        log.Fatal(err)
+    }
 
-	defer a.repo.CloseConn()
+    defer a.repo.CloseConn()
 }
 
 type Middleware func(RequestHandler) http.HandlerFunc
@@ -67,34 +67,34 @@ type RequestHandler func(*http.Request, *repository.Repository) (code int, paylo
 
 func configRoutes(mux *chi.Mux, middleware Middleware, routes []Route) {
 
-	for _, r := range routes {
-		mux.MethodFunc(r.Method, r.Path, middleware(r.Handler))
-	}
+    for _, r := range routes {
+        mux.MethodFunc(r.Method, r.Path, middleware(r.Handler))
+    }
 
 }
 
 func (a *Api) handleRequest(handler RequestHandler) http.HandlerFunc {
 
-	return func(writer http.ResponseWriter, req *http.Request) {
+    return func(writer http.ResponseWriter, req *http.Request) {
 
-		code, payload := handler(req, a.repo)
+        code, payload := handler(req, a.repo)
 
-		writer.Header().Set("Content-Type", "application/json")
-		writer.WriteHeader(code)
+        writer.Header().Set("Content-Type", "application/json")
+        writer.WriteHeader(code)
 
-		if payload == nil {
-			return
-		}
+        if payload == nil {
+            return
+        }
 
-		response, err := json.Marshal(payload)
+        response, err := json.Marshal(payload)
 
-		if err != nil {
-			writer.WriteHeader(http.StatusInternalServerError)
-			writer.Write([]byte(err.Error()))
-			return
-		}
+        if err != nil {
+            writer.WriteHeader(http.StatusInternalServerError)
+            writer.Write([]byte(err.Error()))
+            return
+        }
 
-		writer.Write(response)
-	}
+        writer.Write(response)
+    }
 
 }

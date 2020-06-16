@@ -1,20 +1,20 @@
 package model
 
 import (
-	"time"
+    "time"
 )
 
 type Officer struct {
-	Id   int    `json:"id"`
-	Name string `json:"name"`
+    Id   int    `json:"id"`
+    Name string `json:"name"`
 }
 
 type Case struct {
-	Id       int       `json:"id"`
-	Owner    string    `json:"owner"`
-	Color    string    `json:"color"`
-	Brand    string    `json:"model"`
-	Resolved bool      `json:"resolved"`
-	Officer  Officer   `json:"officer"`
-	Moment   time.Time `json:"moment"`
+    Id       int       `json:"id"`
+    Owner    string    `json:"owner"`
+    Color    string    `json:"color"`
+    Brand    string    `json:"model"`
+    Resolved bool      `json:"resolved"`
+    Officer  Officer   `json:"officer"`
+    Moment   time.Time `json:"moment"`
 }
