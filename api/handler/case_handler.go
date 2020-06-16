@@ -45,7 +45,7 @@ func CreateCase(request *http.Request, repo *repository.Repository) (int, interf
 
 	officer, err := repo.FindAvailableOfficer()
 
-	if err == nil {
+	if err == nil && officer.Id > 0 {
 		body.Officer = officer
 	}
 
@@ -68,13 +68,13 @@ func ResolveCase(request *http.Request, repo *repository.Repository) (int, inter
 		return http.StatusBadRequest, nil
 	}
 
-	_, err = repo.ResolveCase(idInt)
+	officerID, err := repo.ResolveCase(idInt)
 
 	if err != nil {
 		return http.StatusInternalServerError, nil
 	}
 
-	// TODO - ADD SOMETHING LIKE THIS -> go service.assignOfficerToOpenCase(officerId)
+	go repo.UpdateUnassignedOpenCase(officerID)
 
 	return http.StatusOK, nil
 }

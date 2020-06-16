@@ -54,11 +54,13 @@ func (a *Api) Start() {
 
 type RequestHandler func(r *http.Request, repo *repository.Repository) (code int, payload interface{})
 
-func (a *Api) handleRequest(requestHandler RequestHandler) http.HandlerFunc {
+func (a *Api) handleRequest(handler RequestHandler) http.HandlerFunc {
 
 	return func(writer http.ResponseWriter, req *http.Request) {
-		code, payload := requestHandler(req, a.repo)
+
 		writer.Header().Set("Content-Type", "application/json")
+
+		code, payload := handler(req, a.repo)
 		writer.WriteHeader(code)
 
 		if payload == nil {

@@ -24,3 +24,18 @@ func Connect(c config.DBConfig) (*sql.DB, error) {
 func (r *Repository) CloseConn() error {
 	return r.db.Close()
 }
+
+type scanner interface {
+	Scan(...interface{}) error
+}
+
+func handleNullableID(id int) (new sql.NullInt64) {
+
+	new.Int64 = int64(id)
+
+	if id > 0 {
+		new.Valid = true
+	}
+
+	return new
+}

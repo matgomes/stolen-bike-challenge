@@ -14,7 +14,7 @@ func TestHandleID(t *testing.T) {
 		Valid: false,
 	}
 
-	result := handleID(id)
+	result := handleNullableID(id)
 
 	msg := fmt.Sprintf("expected %v, got %v", expected, result)
 

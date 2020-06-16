@@ -1,19 +1,13 @@
 package repository
 
 import (
-	"database/sql"
 	"fmt"
-	"github.com/lib/pq"
 	"github.com/matgomes/stolen-bike-challenge/api/model"
 )
 
 const selectQuery = `SELECT c.id, c.owner, c.color, c.brand, c.resolved, c.moment, o.id, o.name
 					 FROM "case" c
 			  		 JOIN officer o on c.officer_id = o.id`
-
-type scanner interface {
-	Scan(...interface{}) error
-}
 
 func (r *Repository) GetAllCases() (got []model.Case, err error) {
 
@@ -25,7 +19,7 @@ func (r *Repository) GetAllCases() (got []model.Case, err error) {
 
 	for rows.Next() {
 
-		c, err := parseRow(rows)
+		c, err := parseCaseRow(rows)
 
 		if err != nil {
 			return got, err
@@ -42,10 +36,10 @@ func (r *Repository) GetCaseByID(id int) (model.Case, error) {
 	query := fmt.Sprintf("%s %s", selectQuery, "WHERE c.id = $1")
 	row := r.db.QueryRow(query, id)
 
-	return parseRow(row)
+	return parseCaseRow(row)
 }
 
-func parseRow(s scanner) (c model.Case, err error) {
+func parseCaseRow(s scanner) (c model.Case, err error) {
 
 	err = s.Scan(
 		&c.Id,
@@ -59,15 +53,6 @@ func parseRow(s scanner) (c model.Case, err error) {
 	)
 
 	return c, err
-}
-
-func (r *Repository) UpdateField(id int, field string, value interface{}) (err error) {
-
-	query := fmt.Sprintf(`UPDATE "case" SET %s = $1 WHERE id = $2`, pq.QuoteIdentifier(field))
-
-	_, err = r.db.Exec(query, value, id)
-
-	return err
 }
 
 func (r *Repository) UpdateCase(c model.Case) (err error) {
@@ -86,7 +71,7 @@ func (r *Repository) InsertCase(c model.Case) (id int, err error) {
 			  VALUES ($1, $2, $3, $4, $5, $6) 
 			  RETURNING id`
 
-	err = r.db.QueryRow(query, c.Owner, c.Color, c.Brand, c.Resolved, c.Moment, handleID(c.Officer.Id)).Scan(&id)
+	err = r.db.QueryRow(query, c.Owner, c.Color, c.Brand, c.Resolved, c.Moment, handleNullableID(c.Officer.Id)).Scan(&id)
 
 	return id, err
 }
@@ -100,13 +85,12 @@ func (r *Repository) ResolveCase(id int) (officerId int, err error) {
 	return officerId, err
 }
 
-func handleID(id int) (new sql.NullInt64) {
+func (r *Repository) UpdateUnassignedOpenCase(officerID int) (err error) {
 
-	new.Int64 = int64(id)
+	query := `UPDATE "case" SET officer_id = $1 
+			  WHERE id = (SELECT id FROM "case" WHERE resolved = false LIMIT 1)`
 
-	if id > 0 {
-		new.Valid = true
-	}
+	_, err = r.db.Exec(query, officerID)
 
-	return new
+	return err
 }
