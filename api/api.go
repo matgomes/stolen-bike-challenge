@@ -44,7 +44,7 @@ func (a *Api) SetRoutes() {
 		{"/case", handler.GetAllCases, http.MethodGet},
 		{"/case/{id}", handler.GetOneCase, http.MethodGet},
 		{"/case", handler.CreateCase, http.MethodPost},
-		{"/case/{id}/resolve", handler.ResolveCase, http.MethodPost},
+		{"/case/{id}/resolve", handler.ResolveCase, http.MethodPut},
 	}
 
 	configRoutes(a.mux, a.handleRequest, routes)

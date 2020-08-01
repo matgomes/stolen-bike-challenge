@@ -29,10 +29,3 @@ func (r *Repository) CloseConn() error {
 type scanner interface {
 	Scan(...interface{}) error
 }
-
-func getNullableID(id int) sql.NullInt64 {
-	return sql.NullInt64{
-		Int64: int64(id),
-		Valid: id > 0,
-	}
-}

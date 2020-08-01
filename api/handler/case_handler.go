@@ -5,8 +5,10 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/matgomes/stolen-bike-challenge/api/model"
 	"github.com/matgomes/stolen-bike-challenge/api/repository"
+	"gopkg.in/guregu/null.v4/zero"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func GetAllCases(_ *http.Request, repo *repository.Repository) (int, interface{}) {
@@ -36,26 +38,30 @@ func GetOneCase(request *http.Request, repo *repository.Repository) (int, interf
 
 func CreateCase(request *http.Request, repo *repository.Repository) (int, interface{}) {
 
-	var body model.Case
+	var newCase model.Case
 	decoder := json.NewDecoder(request.Body)
 
-	if err := decoder.Decode(&body); err != nil {
+	if err := decoder.Decode(&newCase); err != nil {
 		return http.StatusBadRequest, nil
 	}
 
-	officer, err := repo.FindAvailableOfficer()
+	newCase.Resolved = false
+	newCase.Moment = zero.TimeFrom(time.Now())
 
-	if err == nil && officer.Id > 0 {
-		body.Officer = &officer
+	officer, _ := repo.FindAvailableOfficer()
+
+	if officer.Id.Valid {
+		newCase.Officer = &officer
 	}
 
-	body.Id, err = repo.InsertCase(body)
+	var err error
+	newCase.Id, err = repo.InsertCase(newCase, officer.Id)
 
 	if err != nil {
 		return http.StatusBadRequest, nil
 	}
 
-	return http.StatusOK, body
+	return http.StatusOK, newCase
 }
 
 func ResolveCase(request *http.Request, repo *repository.Repository) (int, interface{}) {
@@ -68,13 +74,13 @@ func ResolveCase(request *http.Request, repo *repository.Repository) (int, inter
 		return http.StatusBadRequest, nil
 	}
 
-	officerID, err := repo.ResolveCase(idInt)
+	_, err = repo.ResolveCase(idInt)
 
 	if err != nil {
 		return http.StatusInternalServerError, nil
 	}
 
-	go repo.UpdateUnassignedOpenCase(officerID)
+	//go repo.UpdateUnassignedOpenCase(officerID)
 
 	return http.StatusOK, nil
 }
