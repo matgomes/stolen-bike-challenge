@@ -2,7 +2,7 @@ package model
 
 import (
 	"gopkg.in/guregu/null.v4"
-	"gopkg.in/guregu/null.v4/zero"
+	"time"
 )
 
 type Officer struct {
@@ -11,11 +11,15 @@ type Officer struct {
 }
 
 type Case struct {
-	Id       null.Int    `json:"id"`
-	Owner    null.String `json:"owner"`
-	Color    null.String `json:"color"`
-	Brand    null.String `json:"model"`
-	Resolved bool        `json:"resolved"`
-	Officer  *Officer    `json:"officer,omitempty"`
-	Moment   zero.Time   `json:"moment"`
+	Id       null.Int `json:"id"`
+	Resolved bool     `json:"resolved"`
+	Officer  *Officer `json:"officer,omitempty"`
+	CaseRequest
+}
+
+type CaseRequest struct {
+	Owner  null.String `json:"owner"`
+	Color  null.String `json:"color"`
+	Brand  null.String `json:"brand"`
+	Moment time.Time   `json:"moment"`
 }

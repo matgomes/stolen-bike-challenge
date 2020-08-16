@@ -1,52 +1,43 @@
 package handler
 
 import (
+	"database/sql"
 	"encoding/json"
 	"github.com/go-chi/chi"
 	"github.com/matgomes/stolen-bike-challenge/api/model"
 	"github.com/matgomes/stolen-bike-challenge/api/repository"
-	"gopkg.in/guregu/null.v4/zero"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 func GetAllCases(_ *http.Request, repo *repository.Repository) (int, interface{}) {
 
 	cases, err := repo.GetAllCases()
 
-	if err != nil {
-		return http.StatusInternalServerError, nil
-	}
-
-	return http.StatusOK, cases
+	return handleResponse(cases, err)
 }
 
 func GetOneCase(request *http.Request, repo *repository.Repository) (int, interface{}) {
 
-	// TODO - check for error
 	id, _ := strconv.Atoi(chi.URLParam(request, "id"))
 
 	result, err := repo.GetCaseByID(id)
 
-	if err != nil {
-		return http.StatusBadRequest, nil
-	}
-
-	return http.StatusOK, result
+	return handleResponse(result, err)
 }
 
 func CreateCase(request *http.Request, repo *repository.Repository) (int, interface{}) {
 
-	var newCase model.Case
+	var cr model.CaseRequest
+	var err error
+
 	decoder := json.NewDecoder(request.Body)
 
-	if err := decoder.Decode(&newCase); err != nil {
+	if err = decoder.Decode(&cr); err != nil {
 		return http.StatusBadRequest, nil
 	}
 
-	newCase.Resolved = false
-	newCase.Moment = zero.TimeFrom(time.Now())
+	newCase := model.Case{CaseRequest: cr}
 
 	officer, _ := repo.FindAvailableOfficer()
 
@@ -54,33 +45,33 @@ func CreateCase(request *http.Request, repo *repository.Repository) (int, interf
 		newCase.Officer = &officer
 	}
 
-	var err error
 	newCase.Id, err = repo.InsertCase(newCase, officer.Id)
 
-	if err != nil {
-		return http.StatusBadRequest, nil
-	}
-
-	return http.StatusOK, newCase
+	return handleResponse(newCase, err)
 }
 
 func ResolveCase(request *http.Request, repo *repository.Repository) (int, interface{}) {
 
-	id := chi.URLParam(request, "id")
+	id, _ := strconv.Atoi(chi.URLParam(request, "id"))
 
-	idInt, err := strconv.Atoi(id)
+	officerID, err := repo.ResolveCase(id)
 
-	if err != nil {
-		return http.StatusBadRequest, nil
+	if err == nil && officerID.Valid {
+		err = repo.AssignOpenCase(officerID)
 	}
 
-	_, err = repo.ResolveCase(idInt)
+	return handleResponse(nil, err)
+}
 
-	if err != nil {
-		return http.StatusInternalServerError, nil
+func handleResponse(result interface{}, err error) (int, interface{}) {
+
+	if err == nil {
+		return http.StatusOK, result
 	}
 
-	//go repo.UpdateUnassignedOpenCase(officerID)
+	if err == sql.ErrNoRows {
+		return http.StatusNotFound, nil
+	}
 
-	return http.StatusOK, nil
+	return http.StatusInternalServerError, nil
 }

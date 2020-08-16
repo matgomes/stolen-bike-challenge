@@ -12,9 +12,7 @@ type Repository struct {
 }
 
 func NewRepository(db *sql.DB) *Repository {
-	return &Repository{
-		db: db,
-	}
+	return &Repository{db}
 }
 
 func Connect(c config.DBConfig) (*sql.DB, error) {

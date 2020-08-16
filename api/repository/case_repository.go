@@ -89,16 +89,16 @@ func (r *Repository) InsertCase(c model.Case, officerId null.Int) (id null.Int, 
 	return id, err
 }
 
-func (r *Repository) ResolveCase(id int) (officerId null.Int, err error) {
+func (r *Repository) ResolveCase(id int) (officerID null.Int, err error) {
 
 	query := `UPDATE "case" c SET resolved = true WHERE id = $1 RETURNING c.officer_id`
 
-	err = r.db.QueryRow(query, id).Scan(&officerId)
+	err = r.db.QueryRow(query, id).Scan(&officerID)
 
-	return officerId, err
+	return officerID, err
 }
 
-func (r *Repository) UpdateUnassignedOpenCase(officerID int) (err error) {
+func (r *Repository) AssignOpenCase(officerID null.Int) (err error) {
 
 	query := `	UPDATE "case" SET officer_id = $1 
               	WHERE id = (SELECT id FROM "case" WHERE resolved = false LIMIT 1)`
