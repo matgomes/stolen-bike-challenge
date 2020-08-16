@@ -42,9 +42,9 @@ func (a *Api) SetRoutes() {
 
 	routes := []Route{
 		{"/case", handler.GetAllCases, http.MethodGet},
-		{"/case/{id}", handler.GetOneCase, http.MethodGet},
+		{"/case/{id:[0-9]+}", handler.GetOneCase, http.MethodGet},
 		{"/case", handler.CreateCase, http.MethodPost},
-		{"/case/{id}/resolve", handler.ResolveCase, http.MethodPut},
+		{"/case/{id:[0-9]+}/resolve", handler.ResolveCase, http.MethodPut},
 	}
 
 	configRoutes(a.mux, a.handleRequest, routes)
