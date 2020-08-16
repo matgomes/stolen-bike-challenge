@@ -10,7 +10,9 @@ const caseBaseQuery = `	SELECT c.id, c.owner, c.color, c.brand, c.resolved, c.mo
                      	FROM "case" c
                      	LEFT JOIN officer o on c.officer_id = o.id`
 
-func (r *Repository) GetAllCases() (got []model.Case, err error) {
+func (r *Repository) GetAllCases() ([]model.Case, error) {
+
+	var got = make([]model.Case, 0)
 
 	rows, err := r.db.Query(caseBaseQuery)
 
