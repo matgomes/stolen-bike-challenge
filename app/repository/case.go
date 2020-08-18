@@ -79,7 +79,7 @@ func (r *Repository) UpdateCase(c model.Case) (err error) {
 
 func (r *Repository) InsertCase(c model.Case, officerId null.Int) (id null.Int, err error) {
 
-    query := `INSERT INTO "case"(owner, color, brand, resolved, moment, officer_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`
+	query := `INSERT INTO "case"(owner, color, brand, resolved, moment, officer_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`
 
 	err = r.db.QueryRow(query, c.Owner, c.Color, c.Brand, c.Resolved, c.Moment, officerId).Scan(&id)
 
