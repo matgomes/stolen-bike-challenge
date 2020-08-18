@@ -1,13 +1,10 @@
 package handler
 
 import (
-	"database/sql"
 	"encoding/json"
-	"github.com/go-chi/chi"
 	"github.com/matgomes/stolen-bike-challenge/api/model"
 	"github.com/matgomes/stolen-bike-challenge/api/repository"
 	"net/http"
-	"strconv"
 )
 
 func GetAllCases(_ *http.Request, repo *repository.Repository) (int, interface{}) {
@@ -19,7 +16,7 @@ func GetAllCases(_ *http.Request, repo *repository.Repository) (int, interface{}
 
 func GetOneCase(request *http.Request, repo *repository.Repository) (int, interface{}) {
 
-	id, _ := strconv.Atoi(chi.URLParam(request, "id"))
+	id := getIDFromURLParam(request)
 
 	result, err := repo.GetCaseByID(id)
 
@@ -52,26 +49,13 @@ func CreateCase(request *http.Request, repo *repository.Repository) (int, interf
 
 func ResolveCase(request *http.Request, repo *repository.Repository) (int, interface{}) {
 
-	id, _ := strconv.Atoi(chi.URLParam(request, "id"))
+	id := getIDFromURLParam(request)
 
 	officerID, err := repo.ResolveCase(id)
 
 	if err == nil && officerID.Valid {
-		err = repo.AssignOpenCase(officerID)
+		go repo.AssignOpenCase(officerID)
 	}
 
 	return handleResponse(nil, err)
-}
-
-func handleResponse(result interface{}, err error) (int, interface{}) {
-
-	if err == nil {
-		return http.StatusOK, result
-	}
-
-	if err == sql.ErrNoRows {
-		return http.StatusNotFound, nil
-	}
-
-	return http.StatusInternalServerError, nil
 }
