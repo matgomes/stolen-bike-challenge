@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/matgomes/stolen-bike-challenge/api/model"
+	"github.com/matgomes/stolen-bike-challenge/app/model"
 )
 
 func (r *Repository) FindAvailableOfficer() (result model.Officer, err error) {

@@ -1,11 +1,11 @@
-package api
+package app
 
 import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-chi/chi"
-	"github.com/matgomes/stolen-bike-challenge/api/handler"
-	"github.com/matgomes/stolen-bike-challenge/api/repository"
+	"github.com/matgomes/stolen-bike-challenge/app/handler"
+	"github.com/matgomes/stolen-bike-challenge/app/repository"
 	"github.com/matgomes/stolen-bike-challenge/config"
 	"log"
 	"net/http"

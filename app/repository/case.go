@@ -2,7 +2,7 @@ package repository
 
 import (
 	"fmt"
-	"github.com/matgomes/stolen-bike-challenge/api/model"
+	"github.com/matgomes/stolen-bike-challenge/app/model"
 	"gopkg.in/guregu/null.v4"
 )
 

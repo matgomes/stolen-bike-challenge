@@ -2,8 +2,8 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/matgomes/stolen-bike-challenge/api/model"
-	"github.com/matgomes/stolen-bike-challenge/api/repository"
+	"github.com/matgomes/stolen-bike-challenge/app/model"
+	"github.com/matgomes/stolen-bike-challenge/app/repository"
 	"net/http"
 )
 
