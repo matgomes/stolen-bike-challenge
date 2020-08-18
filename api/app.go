@@ -11,18 +11,18 @@ import (
 	"net/http"
 )
 
-type Api struct {
+type App struct {
 	mux  *chi.Mux
 	repo *repository.Repository
 }
 
-type Route struct {
+type route struct {
 	path    string
 	handler RequestHandler
 	method  string
 }
 
-func NewApi(conf config.Config) Api {
+func NewApp(conf config.Config) App {
 
 	db, err := repository.Connect(conf.DB)
 
@@ -31,16 +31,16 @@ func NewApi(conf config.Config) Api {
 		panic("failed to connect database")
 	}
 
-	return Api{
+	return App{
 		mux:  chi.NewRouter(),
 		repo: repository.NewRepository(db),
 	}
 
 }
 
-func (a *Api) SetRoutes() {
+func (a *App) SetRoutes() {
 
-	routes := []Route{
+	routes := []route{
 		{"/case", handler.GetAllCases, http.MethodGet},
 		{"/case/{id:[0-9]+}", handler.GetOneCase, http.MethodGet},
 		{"/case", handler.CreateCase, http.MethodPost},
@@ -50,7 +50,7 @@ func (a *Api) SetRoutes() {
 	configRoutes(a.mux, a.handleRequest, routes)
 }
 
-func (a *Api) Start() {
+func (a *App) Start() {
 	log.Println("[ Listening on 0.0.0.0:8080 ]")
 
 	err := http.ListenAndServe(":8080", a.mux)
@@ -65,7 +65,7 @@ func (a *Api) Start() {
 type Middleware func(RequestHandler) http.HandlerFunc
 type RequestHandler func(*http.Request, *repository.Repository) (code int, payload interface{})
 
-func configRoutes(mux *chi.Mux, middleware Middleware, routes []Route) {
+func configRoutes(mux *chi.Mux, middleware Middleware, routes []route) {
 
 	for _, r := range routes {
 		mux.MethodFunc(r.method, r.path, middleware(r.handler))
@@ -73,7 +73,7 @@ func configRoutes(mux *chi.Mux, middleware Middleware, routes []Route) {
 
 }
 
-func (a *Api) handleRequest(handler RequestHandler) http.HandlerFunc {
+func (a *App) handleRequest(handler RequestHandler) http.HandlerFunc {
 
 	return func(writer http.ResponseWriter, req *http.Request) {
 

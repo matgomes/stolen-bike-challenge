@@ -6,7 +6,6 @@ This is for studying purposes
 
 WIP
 
-- [ ] Add support to empty response of available officers
 - [ ] Add Dockerfile and docker-compose 
 - [ ] Add tests
 - [ ] Add logs

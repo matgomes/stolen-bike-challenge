@@ -7,7 +7,7 @@ import (
 
 func main() {
 	conf := config.NewConfig("172.17.0.2", "postgres")
-	a := api.NewApi(conf)
+	a := api.NewApp(conf)
 	a.SetRoutes()
 	a.Start()
 }
